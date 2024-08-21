@@ -1,25 +1,10 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, SafeAreaView, View, TouchableOpacity, Image } from 'react-native';
+import AppNavigator from '../AppNavigator';
 
-export default function HomeScreen() {
+export default function IndexScreen() {
   return (
-    <ImageBackground
-      source={{ uri: 'https://example.com/background-image.jpg' }}
-      style={styles.background}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <Image
-            source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
-            style={styles.reactLogo}
-          />
-          <Text style={styles.text}>Bienvenido a Uasistance!</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Unirse a Eventos</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+   <AppNavigator/>
   );
 }
 

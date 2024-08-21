@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Image, FlatList } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const events = [
   { id: '1', title: 'Evento 1', description: 'Descripción del evento 1', date: '2023-10-01', image: 'https://example.com/event1.jpg' },
@@ -30,7 +32,13 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => (
   </TouchableOpacity>
 );
 
-export default function EventsScreen() {
+export default function EventsScreen({ navigation }: { navigation: NavigationProp<any> }) {
+  
+
+  const handleAddEvent = () => {
+    navigation.navigate('CreateEvent'); 
+  };
+
   return (
     <View style={styles.container}>
       <ThemedView style={styles.titleContainer}>
@@ -46,6 +54,9 @@ export default function EventsScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
       />
+      <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -108,5 +119,17 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 16,
     color: '#333',
+  },
+  fab: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+    backgroundColor: '#03A9F4',
+    borderRadius: 30,
+    elevation: 8,
   },
 });
