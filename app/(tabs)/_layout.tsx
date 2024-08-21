@@ -1,6 +1,8 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -34,7 +36,20 @@ export default function TabLayout() {
         options={{
           title: 'Explore',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <FontAwesomeIcon
+              icon={faCirclePlus}
+              color={color}
+              size={focused ? 26 : 22}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="detalles"
+        options={{
+          title: 'Detalles',
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesomeIcon icon={faCalendar} color={color} size={focused ? 26 : 22} />
           ),
         }}
       />
