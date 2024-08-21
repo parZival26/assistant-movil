@@ -78,3 +78,38 @@ export const createEvent = async (event: Event) => {
     throw error;
   }
 };
+
+interface UserEvents {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  speaker: string;
+}
+
+export const getUserEvents = async (): Promise<UserEvents[] | { error: string }> => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/event/userEvents`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      console.log('Error fetching user events:', response.status);
+      return { error: 'Error al obtener los eventos del usuario' };
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log('Error:', error);
+    return { error: 'Error de red' };
+  }
+};

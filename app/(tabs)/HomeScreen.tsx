@@ -13,12 +13,11 @@ export default function HomeScreen() {
             source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
             style={styles.reactLogo}
           />
-          <Text style={styles.text}>Bienvenido a Uasistance!</Text>
+          <Text style={styles.text}>Bienvenido a Uassistance!</Text>
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Unirse a Eventos</Text>
           </TouchableOpacity>
         </View>
-        
       </SafeAreaView>
     </ImageBackground>
   );
@@ -32,23 +31,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center', // Fondo semi-transparente para mejor visibilidad
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
   content: {
     alignItems: 'center',
   },
   reactLogo: {
-    width: 100,
-    height: 100,
+    width: 180,
+    height: 180,
     marginBottom: 20,
   },
   text: {
     fontSize: 24,
-    color: '#fff',
+    color: '#2b5983',
     marginBottom: 20,
+    fontWeight: 'bold'
   },
   button: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: '#FFB820',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -56,5 +57,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 18,
+    fontWeight:'bold'
   },
 });

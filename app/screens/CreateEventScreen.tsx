@@ -24,7 +24,7 @@ export default function CreateEventScreen() {
   const [showInitialDatePicker, setShowInitialDatePicker] = useState(false);
   const [showFinalDatePicker, setShowFinalDatePicker] = useState(false);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
     try {
       await createEvent(data);
       Alert.alert('Evento creado', 'El evento ha sido creado exitosamente');
