@@ -12,6 +12,7 @@ enum Status {
   finished = 'finished',
 }
 
+
 interface Event {
   id: string;
   title: string;
@@ -21,11 +22,12 @@ interface Event {
 
 interface EventCardProps {
   event: Event;
+  onPress: () => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, onPress }) => {
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress()}>
       <Image source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }} style={styles.image} />
       <View style={styles.cardContent}>
         <ThemedText style={styles.title}>{event.title}</ThemedText>
@@ -36,10 +38,14 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
   );
 };
 
-const DetallesScreen: React.FC = () => {
+interface DetallesScreenProps {
+  navigation: NavigationProp<any>;
+}
+
+const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigation = useNavigation<NavigationProp<any>>();
+  
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -72,7 +78,7 @@ const DetallesScreen: React.FC = () => {
       <FlatList
         data={events}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <EventCard event={item} />}
+        renderItem={({ item }) => <EventCard event={item}  onPress={() => navigation.navigate("DetailEvent", { id: item.id })}/>}
       />
        <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
         <Icon name="add" size={30} color="#fff" />

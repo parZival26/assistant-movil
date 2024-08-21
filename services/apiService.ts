@@ -10,7 +10,7 @@ interface Event {
     finalDate: string;
     speaker: string;
     location: string;
-  }
+}
 
 
 interface Login {
@@ -110,6 +110,36 @@ export const getUserEvents = async (): Promise<UserEvents[] | { error: string }>
     return data;
   } catch (error) {
     console.log('Error:', error);
+    return { error: 'Error de red' };
+  }
+};
+
+
+export const getEvent = async (id: string): Promise<Event | { error: string }> => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/event/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.log('Error fetching event:', response.status);
+      return { error: 'Error al obtener el evento' };
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching event:', error);
     return { error: 'Error de red' };
   }
 };
