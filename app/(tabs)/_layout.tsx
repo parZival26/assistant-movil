@@ -31,20 +31,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="detalles"
         options={{
-          title: 'Explore',
+          title: 'My Events',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'calendar-clear-outline' : 'calendar-outline'} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="detalles"
+       <Tabs.Screen
+        name="profile"
         options={{
-          title: 'Detalles',
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesomeIcon icon={faCalendar} color={color} size={focused ? 26 : 22} />
+            <TabBarIcon name={focused ? 'person' : 'person'} color={color} />
           ),
         }}
       />
