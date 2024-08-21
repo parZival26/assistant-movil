@@ -11,7 +11,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   text: {
-    color: 'black',
+    color: '#2b5983',
     fontSize: 24,
     paddingLeft: 150,
     paddingTop: 40,
@@ -20,7 +20,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: 'red',
   },
   stepContainer: {
     gap: 8,
