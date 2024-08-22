@@ -2,7 +2,7 @@ import { User } from "@/interfaces/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // src/services/apiService.ts
-const BASE_URL = 'http://127.0.0.1:7521';
+const BASE_URL = 'http://tuquio.com/assistant/api';
 
 enum Status {
   starting_soon = 'starting_soon',
@@ -204,4 +204,36 @@ export const addUserEvent = async (eventId: string, userId: number[]) => {
     console.error('Error adding users to event:', error);
     throw error;
   }
+}
+
+export const ValidateQrCode = async (qrCode: string): Promise<{message: string} | { error: string }> => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/assistance/validateQrCode`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ qrCode }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 422) {
+        return { error: 'El código QR no es válido' };
+      }
+      return { error: 'Error al validar el código QR' + response.status };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error validating qr code:', error);
+    throw error;
+  }
+
 }
