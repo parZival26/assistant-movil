@@ -2,7 +2,7 @@ import { User } from "@/interfaces/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // src/services/apiService.ts
-const BASE_URL = 'http://127.0.0.1:7521';
+const BASE_URL = 'http://tuquio.com/assistant/api';
 
 enum Status {
   starting_soon = 'starting_soon',
