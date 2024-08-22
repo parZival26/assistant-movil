@@ -1,15 +1,14 @@
-import { SafeAreaView } from "react-native-safe-area-context"
-import { ActivityIndicator, Text, StyleSheet, ScrollView, View, Image, TouchableOpacity } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator, Text, StyleSheet, ScrollView, View, Image, TouchableOpacity } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'; 
+import { faQrcode, faClipboardList } from '@fortawesome/free-solid-svg-icons'; 
 import { RouteProp } from "@react-navigation/native";
 import { getEvent } from "@/services/apiService";
-import { string } from "yup";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Icon } from "react-native-vector-icons/Icon";
 
 interface DetailEventScreenProps {
     navigation: NavigationProp<any>;
@@ -32,20 +31,29 @@ interface Event {
   status: Status;
 }
 
-const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  route}) => {
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes empieza desde 0
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route }) => {
   const { id } = route.params;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
   const getStatusColor = (status: Status) => {
     switch (status) {
       case Status.starting_soon:
-        return '#808080'; 
+        return '#808080';
       case Status.ongoing:
-        return '#28a745'; 
+        return '#28a745';
       case Status.finished:
-        return '#dc3545'; 
+        return '#dc3545';
       default:
-        return '#000000'; 
+        return '#000000';
     }
   };
 
@@ -65,8 +73,6 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
     const fetchEvent = async () => {
       const result = await getEvent(String(id));
       if (!('error' in result)) {
-        console.log(result);
-        
         setEvent(result);
       } else {
         console.log(result.error);
@@ -85,7 +91,6 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
     );
   }
 
-
   return (
     <ScrollView style={styles.container}>
       <ThemedView style={styles.titleContainer}>
@@ -97,15 +102,13 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
       </ThemedView>
       <View style={styles.eventDetailsContainer}>
         <Image
-          source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }} 
+          source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }}
           style={styles.eventImage}
         />
         <View style={styles.titleRow}>
           <ThemedText type="title" style={styles.eventTitle}>{event?.title}</ThemedText>
           <View style={styles.statusRow}>
-
-            {/* <FontAwesomeIcon icon={faCircle} size={16} color={getStatusColor(event?.status)} style={styles.statusIcon} />
-            <ThemedText style={styles.statusText}>{getStatusText(status)}</ThemedText> */}
+            {/* Aquí podrías añadir un ícono o algún otro contenido */}
           </View>
         </View>
         <View style={styles.infoContainer}>
@@ -113,10 +116,9 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
           <View style={styles.separator} />
           <ThemedText style={styles.eventInfo}>Ubicación: {event?.location}</ThemedText>
           <View style={styles.separator} />
-          <ThemedText style={styles.eventInfo}>Fecha de Inicio: {event?.initialDate}</ThemedText>
+          <ThemedText style={styles.eventInfo}>Fecha de Inicio: {event?.initialDate ? formatDate(event.initialDate) : 'N/A'}</ThemedText>
           <View style={styles.separator} />
-          <ThemedText style={styles.eventInfo}>Fecha de Finalización: {event?.finalDate}</ThemedText>
-          
+          <ThemedText style={styles.eventInfo}>Fecha de Finalización: {event?.finalDate ? formatDate(event.finalDate) : 'N/A'}</ThemedText>
         </View>
         <View style={styles.descriptionContainer}>
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
@@ -126,16 +128,14 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.fab} onPress={handleReadQr}>
-        <Icon name="add" size={30} color="#fff" />
+        <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.bab} onPress={handleAddEvent}>
-        <Icon name="add" size={30} color="#fff" />
+        <FontAwesomeIcon icon={faClipboardList} size={30} color="#fff" />
       </TouchableOpacity>
     </ScrollView>
-
   );
-
-}
+};
 
 export default DetailEventScreen;
 
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   descriptionContainer: {
-    backgroundColor: '#f0f0f0', 
+    backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 10,
     shadowColor: '#000',
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }, 
+  },
   fab: {
     position: 'absolute',
     width: 60,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     right: 30,
     bottom: 30,
-    backgroundColor: '#03A9F4',
+    backgroundColor: '#2b5983',
     borderRadius: 30,
     elevation: 8,
   },
@@ -257,7 +257,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     right: 30,
     bottom: 100,
-    //yellow background
     backgroundColor: '#FFD700',
     borderRadius: 30,
     elevation: 8,
