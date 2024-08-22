@@ -1,19 +1,17 @@
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator, Text, StyleSheet, ScrollView, View, Image, TouchableOpacity } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'; 
-import { faQrcode, faClipboardList } from '@fortawesome/free-solid-svg-icons'; 
-import { RouteProp } from "@react-navigation/native";
-import { getEvent } from "@/services/apiService";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
-import Icon from "react-native-vector-icons/Ionicons";
-
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faQrcode, faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { getEvent } from '@/services/apiService';
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 
 interface DetailEventScreenProps {
-    navigation: NavigationProp<any>;
-    route: RouteProp<{ params: { id: number } }, 'params'>
+  navigation: NavigationProp<any>;
+  route: RouteProp<{ params: { id: number } }, 'params'>
 }
 
 enum Status {
@@ -32,43 +30,46 @@ interface Event {
   status: Status;
 }
 
-const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes empieza desde 0
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+interface Attendance {
+  name: string;
+  attended: string;
+}
+
+const initialData: Attendance[] = [
+  { name: 'Juan Pérez', attended: 'Sí' },
+  { name: 'María García', attended: 'No' },
+  { name: 'Carlos López', attended: 'Sí' },
+  { name: 'Ana Martínez', attended: 'No' }
+];
 
 const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route }) => {
   const { id } = route.params;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [data, setData] = useState<Attendance[]>(initialData);
 
-  const getStatusColor = (status: Status) => {
-    switch (status) {
-      case Status.starting_soon:
-        return '#808080';
-      case Status.ongoing:
-        return '#28a745';
-      case Status.finished:
-        return '#dc3545';
-      default:
-        return '#000000';
-    }
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
-  const handleAddEvent = () => {
-    navigation.navigate('AddUserEvent', { id: id }); 
+  const handleEdit = (index: number) => {
+    const newData = [...data];
+    newData[index].attended = newData[index].attended === 'Sí' ? 'No' : 'Sí';
+    setData(newData);
   };
 
-  const handleReadUserQr = () => {
-    navigation.navigate('Qr', { id: id }); 
-  };
-
-  const handleReadQr = () => {
-    navigation.navigate('ReadQr'); 
-  };
+  const renderItem = ({ item, index }: { item: Attendance, index: number }) => (
+    <View style={styles.row}>
+      <Text style={[styles.cell, styles.nameCell]}>{item.name}</Text>
+      <TouchableOpacity onPress={() => handleEdit(index)}>
+        <Text style={[styles.cell, styles.attendedCell, styles.editableCell]}>{item.attended}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -108,9 +109,6 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
         />
         <View style={styles.titleRow}>
           <ThemedText type="title" style={styles.eventTitle}>{event?.title}</ThemedText>
-          <View style={styles.statusRow}>
-            {/* Aquí podrías añadir un ícono o algún otro contenido */}
-          </View>
         </View>
         <View style={styles.infoContainer}>
           <ThemedText style={styles.eventInfo}>Ponente: {event?.speaker}</ThemedText>
@@ -125,20 +123,33 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
         </View>
       </View>
-      <TouchableOpacity style={styles.qab} onPress={handleReadUserQr}>
+
+      {/* Tabla de asistencia */}
+      <View style={styles.tableStyle}>
+        <ThemedText style={styles.subtitle}>Tabla</ThemedText>
+        <View style={styles.tableHeader}>
+          <Text style={[styles.headerCell, styles.nameHeader]}>Nombre</Text>
+          <Text style={[styles.headerCell, styles.attendedHeader]}>Asistencia</Text>
+        </View>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => String(index)}
+        />
+      </View>
+
+      <TouchableOpacity style={styles.qab} onPress={() => navigation.navigate('Qr', { id })}>
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.fab} onPress={handleReadQr}>
+      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('ReadQr')}>
         <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.bab} onPress={handleAddEvent}>
+      <TouchableOpacity style={styles.bab} onPress={() => navigation.navigate('AddUserEvent', { id })}>
         <FontAwesomeIcon icon={faClipboardList} size={30} color="#fff" />
       </TouchableOpacity>
     </ScrollView>
   );
 };
-
-export default DetailEventScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -180,23 +191,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusIcon: {
-    marginRight: 8,
-  },
-  statusText: {
-    fontSize: 16,
-    color: '#333',
-  },
   eventTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#2b5983',
-    flex: 1,
-    textAlign: 'left',
   },
   infoContainer: {
     backgroundColor: '#ffffff',
@@ -233,46 +231,104 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  tableStyle: {
+    padding: 6,
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+  },
+  headerCell: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  nameHeader: {
+    flex: 1,
+  },
+  attendedHeader: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  cell: {
+    fontSize: 14,
+    color: '#333',
+  },
+  nameCell: {
+    flex: 1,
+  },
+  attendedCell: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  editableCell: {
+    color: '#2b5983',
+    textDecorationLine: 'underline',
+  },
+  subtitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: '#2b5983',
+    padding: 20,
+  },
+  qab: {
+    position: 'absolute',
+    backgroundColor: 'red',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 170,
+    right: 20,
+  },
+  fab: {
+    position: 'absolute',
+    backgroundColor: '#2b5983',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 90,
+    right: 20,
+  },
+  bab: {
+    position: 'absolute',
+    backgroundColor: '#FFD700',
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 10,
+    right: 20,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  fab: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 30,
-    backgroundColor: '#2b5983',
-    borderRadius: 30,
-    elevation: 8,
-  },
-  bab: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 100,
-    backgroundColor: '#FFD700',
-    borderRadius: 30,
-    elevation: 8,
-  },
-  qab: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 170,
-    //red background
-    backgroundColor: '#FF0000',
-    borderRadius: 30,
-    elevation: 8,
-  },
 });
+
+export default DetailEventScreen;
