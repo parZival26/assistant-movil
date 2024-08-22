@@ -8,7 +8,8 @@ import DetailEventScreen from './screens/DetailEventScreen';
 import ReadQrScreen from './screens/ReadQrScreen';
 import AddUserEventScreen from './screens/AddUserEventScreen';
 import AccessDeniedScreen from './screens/AccessDeniedScreen';
-import AccessAccepted from './screens/AccessDenied';
+import AccessAcceptedScreen from './screens/AccessAcceptedScreen';
+import QrScreen from './screens/QrScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -23,10 +24,9 @@ export default function AppNavigator() {
         <Stack.Screen name="DetailEvent" component={DetailEventScreen} options={{ headerShown: false }} />
          <Stack.Screen name="ReadQr" component={ReadQrScreen} options={{ headerShown: false }} />
          <Stack.Screen name="AddUserEvent" component={AddUserEventScreen} options={{ headerShown: false }} />
-         <Stack.Screen name="ReadQrUser" component={ReadQrScreen} options={{ headerShown: false }} />
          <Stack.Screen name="AccessDenied" component={AccessDeniedScreen} options={{ headerShown: false }} />
-         <Stack.Screen name="AccessAccepted" component={AccessAccepted} options={{ headerShown: false }} />
-
+         <Stack.Screen name="AccessAccepted" component={AccessAcceptedScreen} options={{ headerShown: false }} />
+         <Stack.Screen name="Qr" component={QrScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
   );
 }

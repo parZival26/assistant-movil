@@ -8,6 +8,8 @@ import { RouteProp } from "@react-navigation/native";
 import { getEvent } from "@/services/apiService";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import Icon from "react-native-vector-icons/Ionicons";
+
 
 interface DetailEventScreenProps {
     navigation: NavigationProp<any>;
@@ -57,11 +59,15 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
   };
 
   const handleAddEvent = () => {
-    navigation.navigate('AddUserEvent');
+    navigation.navigate('AddUserEvent', { id: id }); 
+  };
+
+  const handleReadUserQr = () => {
+    navigation.navigate('Qr', { id: id }); 
   };
 
   const handleReadQr = () => {
-    navigation.navigate('ReadQrUser');
+    navigation.navigate('ReadQr'); 
   };
 
   useEffect(() => {
@@ -119,6 +125,9 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
         </View>
       </View>
+      <TouchableOpacity style={styles.qab} onPress={handleReadUserQr}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.fab} onPress={handleReadQr}>
         <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
       </TouchableOpacity>
@@ -250,6 +259,19 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 100,
     backgroundColor: '#FFD700',
+    borderRadius: 30,
+    elevation: 8,
+  },
+  qab: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 170,
+    //red background
+    backgroundColor: '#FF0000',
     borderRadius: 30,
     elevation: 8,
   },

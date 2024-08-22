@@ -3,8 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Camera, CameraView } from "expo-camera";
 import { ValidateQrCode } from '@/services/apiService';
 import { FontAwesome5 } from '@expo/vector-icons'; 
+import { NavigationProp } from '@react-navigation/native';
 
-export default function App() {
+export default function ReadQrScreen({ navigation }: { navigation: NavigationProp<any> }) {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [message, setMessage] = useState(''); 
@@ -22,19 +23,11 @@ export default function App() {
     
     ValidateQrCode(data).then((result) => {
       if ('error' in result) {
-        setMessage(`Oops ${result.error}`);
-        setIcon('times-circle'); 
+        navigation.navigate("AccessDenied")
       } else {
-        setMessage('¡Código QR válido!');
-        setIcon('check-circle');
+        navigation.navigate("AccessAccepted")
       }
     });
-
-    setTimeout(() => {
-      setScanned(false);
-      setMessage('');
-      setIcon(''); 
-    }, 5000);
   };
 
   const handleCloseMessage = () => {

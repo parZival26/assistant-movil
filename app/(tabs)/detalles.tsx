@@ -4,7 +4,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { getUserEvents } from '@/services/apiService'; // Asegúrate de ajustar la ruta según tu estructura de proyecto
+import { getUserEvents } from '@/services/apiService';
 
 enum Status {
   starting_soon = 'starting_soon',
@@ -36,13 +36,6 @@ const EventCard: React.FC<EventCardProps> = ({ event, onPress }) => {
 
   return (
     <>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText style={styles.title}>Uassistance</ThemedText>
-        <Image
-          source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
-          style={styles.reactLogo}
-        />
-      </ThemedView>
       <TouchableOpacity style={styles.card} onPress={onPress}>
         <Image source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }} style={styles.image} />
         <View style={styles.cardContent}>
@@ -95,6 +88,13 @@ const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
 
   return (
     <ThemedView style={styles.container}>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText style={styles.title}>Uassistance</ThemedText>
+        <Image
+          source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
+          style={styles.reactLogo}
+        />
+      </ThemedView>
       <FlatList
         data={events}
         keyExtractor={(item) => String(item.id)}

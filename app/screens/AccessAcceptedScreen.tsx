@@ -6,7 +6,7 @@ const AccessAcceptedScreen = ({ navigation }: { navigation: NavigationProp<any> 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.messageContainer}>
-        <Text style={styles.message}>Acceso denegado</Text>
+        <Text style={styles.message}>Acceso Aceptado!</Text>
       </View>
       <TouchableOpacity
         style={styles.button}
@@ -31,10 +31,10 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#dc3545',
+    color: '#2b5983',
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#FFB820',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 5,
