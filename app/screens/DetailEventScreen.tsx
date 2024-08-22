@@ -250,6 +250,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
+
   },
   headerCell: {
     fontSize: 16,
@@ -258,6 +259,7 @@ const styles = StyleSheet.create({
   },
   nameHeader: {
     flex: 1,
+    marginLeft: '5%'
   },
   attendedHeader: {
     flex: 1,
@@ -276,10 +278,12 @@ const styles = StyleSheet.create({
   },
   nameCell: {
     flex: 1,
+    marginLeft: '10%'
   },
   attendedCell: {
     flex: 1,
     textAlign: 'center',
+    marginRight: '30%'
   },
   editableCell: {
     color: '#2b5983',
