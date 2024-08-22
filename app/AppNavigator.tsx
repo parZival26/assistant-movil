@@ -6,6 +6,7 @@ import MainTabNavigator from './MainTabNavigator';
 import CreateEventScreen from './screens/CreateEventScreen';
 import DetailEventScreen from './screens/DetailEventScreen';
 import ReadQrScreen from './screens/ReadQrScreen';
+import AddUserEventScreen from './screens/AddUserEventScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -19,6 +20,7 @@ export default function AppNavigator() {
          <Stack.Screen name="CreateEvent" component={CreateEventScreen} options={{ headerShown: false }} /> 
         <Stack.Screen name="DetailEvent" component={DetailEventScreen} options={{ headerShown: false }} />
          <Stack.Screen name="ReadQr" component={ReadQrScreen} options={{ headerShown: false }} />
+         <Stack.Screen name="AddUserEvent" component={AddUserEventScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
   );
 }

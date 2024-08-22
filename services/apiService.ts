@@ -1,7 +1,8 @@
+import { User } from "@/interfaces/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // src/services/apiService.ts
-const BASE_URL = 'http://tuquio.com/assistant/api';
+const BASE_URL = 'http://127.0.0.1:7521';
 
 interface Event {
     title: string;
@@ -142,4 +143,57 @@ export const getEvent = async (id: string): Promise<Event | { error: string }> =
     console.error('Error fetching event:', error);
     return { error: 'Error de red' };
   }
+}; 
+
+export const getUsers = async (): Promise<User[] | { error: string }> => {
+  try {
+    const response = await fetch(`${BASE_URL}/user`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${await getToken()}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.log('Error fetching users:', response.status);
+      return { error: 'Error al obtener los usuarios' };
+    }
+
+    const data = await response.json();
+    return data;
+
+
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return { error: 'Error de red' };
+  }
 };
+
+export const addUserEvent = async (eventId: string, userId: number[]) => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/assistance/addUserToEvent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al añadir usuarios al evento');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error adding users to event:', error);
+    throw error;
+  }
+}
