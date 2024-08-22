@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native';
+import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, View, Alert } from 'react-native';
 import { User } from '@/interfaces/User';
 import { addUserEvent, getUsers } from '@/services/apiService';
 import { ThemedView } from '@/components/ThemedView';
@@ -74,9 +74,21 @@ const AddUserEventScreen: React.FC<AddUserEventScreenProps> = ({navigation, rout
     console.log('Selected Users:', selectedUsers);
     const result = await addUserEvent(id, selectedUsers.map(Number));
     if ('error' in result) {
-      console.log(result.error);
+        Alert.alert('Error', result.error);
+        console.log(result.error);
     } else {
-      navigation.goBack();
+        const unexistingUsers = result.unexistingUsers.join(', ');
+        if (unexistingUsers) {
+            Alert.alert(`Los siguientes usuarios no existen: ${unexistingUsers}`);
+        }
+        const userAlredyRegistered = result.userAlredyRegistered.join(', ');
+        console.log(userAlredyRegistered);
+        
+        if (userAlredyRegistered) {
+            Alert.alert(`Los siguientes usuarios ya están registrados: ${userAlredyRegistered}`);
+        }
+        
+        navigation.goBack();
     }
   };
 

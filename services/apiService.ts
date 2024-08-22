@@ -2,7 +2,7 @@ import { User } from "@/interfaces/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // src/services/apiService.ts
-const BASE_URL = 'http://tuquio.com/assistant/api';
+const BASE_URL = 'http://127.0.0.1:7521';
 
 enum Status {
   starting_soon = 'starting_soon',
@@ -37,9 +37,21 @@ export const login  = async (login: Login) => {
       body: JSON.stringify(login),
     });
     if (!response.ok) {
-      console.log('Error logging in:', response.status);
+      const errorData = await response.json(); // Extrae el cuerpo de la respuesta como JSON
+      console.log(errorData);
+      let errorMessage: string
+      //check if errorData is an array
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+
+       
+      console.log('Error logging in:', errorMessage);
       
-      return { error: 'Usuario o contraseña incorrectos' };
+      
+      return { error: errorMessage };
     }
     const data = await response.json();
     await AsyncStorage.setItem('access', data.accessToken);
@@ -77,7 +89,15 @@ export const createEvent = async (event: Event) => {
     });
 
     if (!response.ok) {
-      throw new Error('Error al crear el evento');
+      const errorData = await response.json(); // Extrae el cuerpo de la respuesta como JSON
+      let errorMessage: string
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+      
+      return { error: errorMessage };
     }
 
     const data = await response.json();
@@ -140,7 +160,15 @@ export const getEvent = async (id: string): Promise<Event | { error: string }> =
     });
 
     if (!response.ok) {
-      console.log('Error fetching event:', response.status);
+      const errorData = await response.json();
+      let errorMessage: string
+      //check if errorData is an array
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+      console.log('Error fetching event:', errorMessage);
       return { error: 'Error al obtener el evento' };
     }
 
@@ -195,8 +223,14 @@ export const addUserEvent = async (eventId: number, userId: number[]) => {
     });
 
     if (!response.ok) {
-      console.log('Error adding users to event:', response.status);
-      return { error: 'Error al agregar usuarios al evento' };
+      const errorData = await response.json();
+      let errorMessage: string
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+      return { error: errorMessage };
     }
 
     const data = await response.json();
@@ -253,13 +287,12 @@ export const getUserQr = async (eventId: number): Promise<{qrCodeDataURL: string
     });
 
     if (!response.ok) {
+      const errorData = await response.json(); // Extrae el cuerpo de la respuesta como JSON
+      const errorMessage = errorData.message || 'Error desconocido';
       console.log('Error getting QR:', response.status);
 
-      if (response.status === 422) {
-        return { error: 'El evento no existe' };
-      }
-      
-      return { error: 'Error al obtener el QR ' + response.status };
+      return { error: errorMessage };
+
     }
 
     console.log('Response:', response);
