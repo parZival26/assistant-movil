@@ -1,6 +1,6 @@
 import { User } from "./User";
 
-interface Attendance {
+export interface Attendance {
     User: User;
     status: string;
   }

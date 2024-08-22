@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { getEvent, getEventUsers } from '@/services/apiService';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { User } from '@/interfaces/User';
 import { Attendance } from '@/interfaces/Attendace';
 
 interface DetailEventScreenProps {
@@ -30,6 +31,7 @@ interface Event {
   location: string;
   status: Status;
 }
+
 
 
 
@@ -63,13 +65,14 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
       } else {
         console.log(result.error);
       }
+
       const resultUsers = await getEventUsers(id);
+      console.log(resultUsers);
       if (!('error' in resultUsers)) {
         setEventUsers(resultUsers);
       } else {
         console.log(resultUsers.error);
       }
-
       setLoading(false);
     };
 
@@ -132,11 +135,11 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
       <TouchableOpacity style={styles.qab} onPress={() => navigation.navigate('Qr', { id })}>
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.bab} onPress={() => navigation.navigate('AddUserEvent', { id })}>
-        <FontAwesomeIcon icon={faClipboardList} size={30} color="#fff" />
-      </TouchableOpacity>
       <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('ReadQr')}>
         <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.bab} onPress={() => navigation.navigate('AddUserEvent', { id })}>
+        <FontAwesomeIcon icon={faClipboardList} size={30} color="#fff" />
       </TouchableOpacity>
     </ScrollView>
   );
@@ -241,7 +244,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
-
   },
   headerCell: {
     fontSize: 16,
@@ -250,7 +252,6 @@ const styles = StyleSheet.create({
   },
   nameHeader: {
     flex: 1,
-    marginLeft: '5%'
   },
   attendedHeader: {
     flex: 1,
@@ -269,12 +270,10 @@ const styles = StyleSheet.create({
   },
   nameCell: {
     flex: 1,
-    marginLeft: '10%'
   },
   attendedCell: {
     flex: 1,
     textAlign: 'center',
-    marginRight: '30%'
   },
   editableCell: {
     color: '#2b5983',

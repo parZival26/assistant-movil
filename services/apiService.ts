@@ -318,7 +318,7 @@ export const getEventUsers = async (eventId: Number): Promise<Attendance[] | { e
       throw new Error('No se encontró el token');
     }
 
-    const response = await fetch(`${BASE_URL}/assistance/eventUsers/${eventId}`, {
+    const response = await fetch(`${BASE_URL}/assistance/assistanceByEvent/${eventId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -338,7 +338,9 @@ export const getEventUsers = async (eventId: Number): Promise<Attendance[] | { e
     }
 
     const data = await response.json();
-    return data;
+    console.log('Data:', JSON.stringify(data, null, 2));
+    
+    return data.EventUser;
 
   } catch (error) {
     console.error('Error fetching event users:', error);
@@ -346,38 +348,3 @@ export const getEventUsers = async (eventId: Number): Promise<Attendance[] | { e
   }
 };
 
-export const getAssistanceByEvent = async (eventId: number): Promise<any[] | { error: string }> => {
-  try {
-    const token = await getToken();
-    if (!token) {
-      throw new Error('No se encontró el token');
-    }
-
-    const response = await fetch(`${BASE_URL}/assistance/assistanceByEvent/${eventId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();   
- // Extrae el cuerpo de la respuesta como JSON
-      let errorMessage: string;
-      if (errorData.message instanceof Array) {
-        errorMessage = errorData.message.join(', ');
-      } else {
-        errorMessage = errorData.message || 'Error desconocido';
-      }
-      console.log('Error fetching assistance:', errorMessage);
-      return { error: errorMessage };
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching assistance by event:', error);
-    throw error;
-  }
-};
