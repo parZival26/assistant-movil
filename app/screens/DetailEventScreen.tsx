@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context"
-import { ActivityIndicator, Text, StyleSheet, ScrollView, View, Image } from "react-native"
+import { ActivityIndicator, Text, StyleSheet, ScrollView, View, Image, TouchableOpacity } from "react-native"
 import { NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -9,6 +9,7 @@ import { getEvent } from "@/services/apiService";
 import { string } from "yup";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
+import Icon from "react-native-vector-icons/Ionicons";
 
 interface DetailEventScreenProps {
     navigation: NavigationProp<any>;
@@ -48,6 +49,10 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
     }
   };
 
+  const handleAddEvent = () => {
+    navigation.navigate('AddUserEvent'); 
+  };
+
   useEffect(() => {
     const fetchEvent = async () => {
       const result = await getEvent(String(id));
@@ -74,11 +79,6 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
 
 
   return (
-    // <SafeAreaView>
-    //   <Text>{event?.title}</Text>
-    //   <Text>{event?.description}</Text>
-    // </SafeAreaView>
-
     <ScrollView style={styles.container}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText style={styles.title}>Uassistance</ThemedText>
@@ -114,9 +114,13 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
         </View>
       </View>
+      <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
     </ScrollView>
 
   );
+
 }
 
 export default DetailEventScreen;
@@ -218,5 +222,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },  
+  }, 
+  fab: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 30,
+    backgroundColor: '#03A9F4',
+    borderRadius: 30,
+    elevation: 8,
+  },
 });
