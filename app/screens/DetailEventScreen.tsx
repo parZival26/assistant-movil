@@ -53,6 +53,10 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
     navigation.navigate('AddUserEvent'); 
   };
 
+  const handleReadQr = () => {
+    navigation.navigate('ReadQrUser'); 
+  };
+
   useEffect(() => {
     const fetchEvent = async () => {
       const result = await getEvent(String(id));
@@ -114,7 +118,10 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
         </View>
       </View>
-      <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
+      <TouchableOpacity style={styles.fab} onPress={handleReadQr}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.bab} onPress={handleAddEvent}>
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
     </ScrollView>
@@ -232,6 +239,19 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30,
     backgroundColor: '#03A9F4',
+    borderRadius: 30,
+    elevation: 8,
+  },
+  bab: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 100,
+    //yellow background
+    backgroundColor: '#FFD700',
     borderRadius: 30,
     elevation: 8,
   },
