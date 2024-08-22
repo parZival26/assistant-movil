@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Image, FlatList, ActivityIndicator 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getUserEvents } from '@/services/apiService';
 
 enum Status {
@@ -60,7 +60,7 @@ const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(true);
   
 
-  useEffect(() => {
+  useFocusEffect(() => {
     const fetchEvents = async () => {
       const result = await getUserEvents();
       if (!('error' in result)) {
@@ -72,7 +72,7 @@ const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
     };
 
     fetchEvents();
-  }, []);
+  });
 
   const handleAddEvent = () => {
     navigation.navigate('CreateEvent'); 

@@ -38,7 +38,6 @@ export default function LoginScreen({ navigation }: { navigation: NavigationProp
                 if (response.error) {
                     alert(response.error);
                 } else {                    
-                    alert('Inicio de sesión exitoso');
                     navigation.navigate('Main'); // Redirigir a las pestañas
                 }
             }).catch((error) => {

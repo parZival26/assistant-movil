@@ -28,9 +28,16 @@ export default function CreateEventScreen() {
 
   const onSubmit = async (data: any) => {
     try {
-      await createEvent(data);
-      Alert.alert('Evento creado', 'El evento ha sido creado exitosamente');
-      navigation.goBack();
+      const result = await createEvent(data);
+      if ('error' in result) {
+        Alert.alert('Error', result.error);
+
+      } else {
+        Alert.alert('Evento creado', 'El evento ha sido creado exitosamente');
+        navigation.goBack();
+      }
+
+      
     } catch (error) {
       Alert.alert('Error', 'Hubo un error al crear el evento');
     }
