@@ -50,11 +50,15 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
   };
 
   const handleAddEvent = () => {
-    navigation.navigate('AddUserEvent'); 
+    navigation.navigate('AddUserEvent', { id: id }); 
+  };
+
+  const handleReadUserQr = () => {
+    navigation.navigate('Qr', { id: id }); 
   };
 
   const handleReadQr = () => {
-    navigation.navigate('ReadQrUser'); 
+    navigation.navigate('ReadQr'); 
   };
 
   useEffect(() => {
@@ -118,6 +122,9 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
           <ThemedText style={styles.eventDescription}>{event?.description}</ThemedText>
         </View>
       </View>
+      <TouchableOpacity style={styles.qab} onPress={handleReadUserQr}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
       <TouchableOpacity style={styles.fab} onPress={handleReadQr}>
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
@@ -252,6 +259,19 @@ const styles = StyleSheet.create({
     bottom: 100,
     //yellow background
     backgroundColor: '#FFD700',
+    borderRadius: 30,
+    elevation: 8,
+  },
+  qab: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 170,
+    //red background
+    backgroundColor: '#FF0000',
     borderRadius: 30,
     elevation: 8,
   },

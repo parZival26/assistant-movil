@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, View } from 'react-native';
 import { User } from '@/interfaces/User';
-import { getUsers } from '@/services/apiService';
+import { addUserEvent, getUsers } from '@/services/apiService';
 import { ThemedView } from '@/components/ThemedView';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
 
 const UserCard: React.FC<{ user: User }> = ({ user }) => {
   return (
@@ -14,10 +15,17 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
   );
 };
 
-const AddUserEventScreen = () => {
+
+interface AddUserEventScreenProps {
+    navigation: NavigationProp<any>;
+    route: RouteProp<{ params: { id: number } }, 'params'>
+}
+
+const AddUserEventScreen: React.FC<AddUserEventScreenProps> = ({navigation, route}) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { id } = route.params;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -64,7 +72,12 @@ const AddUserEventScreen = () => {
 
   const handleSend = async () => {
     console.log('Selected Users:', selectedUsers);
-    // Implementa la lógica de envío aquí
+    const result = await addUserEvent(id, selectedUsers.map(Number));
+    if ('error' in result) {
+      console.log(result.error);
+    } else {
+      navigation.goBack();
+    }
   };
 
   if (loading) {

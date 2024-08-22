@@ -6,7 +6,7 @@ import { string } from 'yup';
 
 
 
-export default function App() {
+export default function ReadQrScreen() {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
 

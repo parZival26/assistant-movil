@@ -104,7 +104,7 @@ export const getUserEvents = async (): Promise<Event[] | { error: string }> => {
       throw new Error('No se encontró el token');
     }
 
-    const response = await fetch(`${BASE_URL}/event/userEvents`, {
+    const response = await fetch(`${BASE_URL}/event/`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ export const getUsers = async (): Promise<User[] | { error: string }> => {
   }
 };
 
-export const addUserEvent = async (eventId: string, userId: number[]) => {
+export const addUserEvent = async (eventId: number, userId: number[]) => {
   try {
     const token = await getToken();
     if (!token) {
@@ -191,11 +191,12 @@ export const addUserEvent = async (eventId: string, userId: number[]) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ users: userId, event: eventId }),
     });
 
     if (!response.ok) {
-      throw new Error('Error al añadir usuarios al evento');
+      console.log('Error adding users to event:', response.status);
+      return { error: 'Error al agregar usuarios al evento' };
     }
 
     const data = await response.json();
@@ -235,5 +236,43 @@ export const ValidateQrCode = async (qrCode: string): Promise<{message: string} 
     console.error('Error validating qr code:', error);
     throw error;
   }
+
+}
+
+export const getUserQr = async (eventId: number): Promise<{qrCodeDataURL: string} | {error:string}>  => {
+  try {
+    const token = await AsyncStorage.getItem('access')
+    console.log('Token:', token);
+    
+    const response = await  fetch(`${BASE_URL}/assistance/generateQR/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      console.log('Error getting QR:', response.status);
+
+      if (response.status === 422) {
+        return { error: 'El evento no existe' };
+      }
+      
+      return { error: 'Error al obtener el QR ' + response.status };
+    }
+
+    console.log('Response:', response);
+    
+
+    const data = await response.json();
+    console.log('Data:', data);
+    return data;
+
+  } catch (error) {
+    console.error('Error getting QR:', error);
+    throw error;
+  }
+  
 
 }
