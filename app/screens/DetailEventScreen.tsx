@@ -8,7 +8,8 @@ import { RouteProp } from "@react-navigation/native";
 import { getEvent } from "@/services/apiService";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Icon } from "react-native-vector-icons/Icon";
+import Icon from "react-native-vector-icons/Ionicons";
+
 
 interface DetailEventScreenProps {
     navigation: NavigationProp<any>;
