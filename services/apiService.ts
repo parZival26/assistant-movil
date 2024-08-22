@@ -1,5 +1,6 @@
 import { User } from "@/interfaces/User";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Attendance } from '@/interfaces/Attendace';
 
 // src/services/apiService.ts
 const BASE_URL = 'http://tuquio.com/assistant/api';
@@ -309,3 +310,74 @@ export const getUserQr = async (eventId: number): Promise<{qrCodeDataURL: string
   
 
 }
+
+export const getEventUsers = async (eventId: Number): Promise<Attendance[] | { error: string }> => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/assistance/eventUsers/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      let errorMessage: string
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+      return { error: errorMessage };
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error('Error fetching event users:', error);
+    return { error: 'Error de red' };
+  }
+};
+
+export const getAssistanceByEvent = async (eventId: number): Promise<any[] | { error: string }> => {
+  try {
+    const token = await getToken();
+    if (!token) {
+      throw new Error('No se encontró el token');
+    }
+
+    const response = await fetch(`${BASE_URL}/assistance/assistanceByEvent/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();   
+ // Extrae el cuerpo de la respuesta como JSON
+      let errorMessage: string;
+      if (errorData.message instanceof Array) {
+        errorMessage = errorData.message.join(', ');
+      } else {
+        errorMessage = errorData.message || 'Error desconocido';
+      }
+      console.log('Error fetching assistance:', errorMessage);
+      return { error: errorMessage };
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching assistance by event:', error);
+    throw error;
+  }
+};

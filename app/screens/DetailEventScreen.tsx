@@ -5,9 +5,10 @@ import { NavigationProp, RouteProp } from '@react-navigation/native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faQrcode, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { getEvent } from '@/services/apiService';
+import { getEvent, getEventUsers } from '@/services/apiService';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { Attendance } from '@/interfaces/Attendace';
 
 interface DetailEventScreenProps {
   navigation: NavigationProp<any>;
@@ -30,23 +31,13 @@ interface Event {
   status: Status;
 }
 
-interface Attendance {
-  name: string;
-  attended: string;
-}
 
-const initialData: Attendance[] = [
-  { name: 'Juan Pérez', attended: 'Sí' },
-  { name: 'María García', attended: 'No' },
-  { name: 'Carlos López', attended: 'Sí' },
-  { name: 'Ana Martínez', attended: 'No' }
-];
 
 const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route }) => {
   const { id } = route.params;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<Attendance[]>(initialData);
+  const [eventUsers, setEventUsers] = useState<Attendance[]>([]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -56,18 +47,11 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
     return `${day}/${month}/${year}`;
   };
 
-  const handleEdit = (index: number) => {
-    const newData = [...data];
-    newData[index].attended = newData[index].attended === 'Sí' ? 'No' : 'Sí';
-    setData(newData);
-  };
 
   const renderItem = ({ item, index }: { item: Attendance, index: number }) => (
     <View style={styles.row}>
-      <Text style={[styles.cell, styles.nameCell]}>{item.name}</Text>
-      <TouchableOpacity onPress={() => handleEdit(index)}>
-        <Text style={[styles.cell, styles.attendedCell, styles.editableCell]}>{item.attended}</Text>
-      </TouchableOpacity>
+      <Text style={[styles.cell, styles.nameCell]}>{item.User.username}</Text>
+      <Text style={[styles.cell, styles.attendedCell, styles.editableCell]}>{item.status}</Text>
     </View>
   );
 
@@ -79,6 +63,13 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
       } else {
         console.log(result.error);
       }
+      const resultUsers = await getEventUsers(id);
+      if (!('error' in resultUsers)) {
+        setEventUsers(resultUsers);
+      } else {
+        console.log(resultUsers.error);
+      }
+
       setLoading(false);
     };
 
@@ -132,7 +123,7 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
           <Text style={[styles.headerCell, styles.attendedHeader]}>Asistencia</Text>
         </View>
         <FlatList
-          data={data}
+          data={eventUsers}
           renderItem={renderItem}
           keyExtractor={(item, index) => String(index)}
         />
@@ -141,11 +132,11 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation, route
       <TouchableOpacity style={styles.qab} onPress={() => navigation.navigate('Qr', { id })}>
         <Icon name="add" size={30} color="#fff" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('ReadQr')}>
-        <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
-      </TouchableOpacity>
       <TouchableOpacity style={styles.bab} onPress={() => navigation.navigate('AddUserEvent', { id })}>
         <FontAwesomeIcon icon={faClipboardList} size={30} color="#fff" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('ReadQr')}>
+        <FontAwesomeIcon icon={faQrcode} size={30} color="#fff" />
       </TouchableOpacity>
     </ScrollView>
   );
