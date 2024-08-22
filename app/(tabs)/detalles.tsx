@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     right: 30,
     bottom: 30,
-    backgroundColor: '#03A9F4',
+    backgroundColor: '#2b5983',
     borderRadius: 30,
     elevation: 8,
   },

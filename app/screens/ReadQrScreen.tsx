@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
-import { CameraView, Camera } from "expo-camera";
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Camera, CameraView } from "expo-camera";
 import { ValidateQrCode } from '@/services/apiService';
-import { string } from 'yup';
-
-
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
+  const [message, setMessage] = useState(''); 
+  const [icon, setIcon] = useState(''); 
 
   useEffect(() => {
     (async () => {
@@ -19,20 +19,28 @@ export default function App() {
 
   const handleBarCodeScanned = ({ type, data }: { type: string, data: string }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     
-    const result = ValidateQrCode(data).then((result) => {
-      //validate if result is type {error: string}
-      if ('error' in result){
-        alert(result.error);
+    ValidateQrCode(data).then((result) => {
+      if ('error' in result) {
+        setMessage(`Oops ${result.error}`);
+        setIcon('times-circle'); 
       } else {
-        alert('QR Code is valid');
+        setMessage('¡Código QR válido!');
+        setIcon('check-circle');
       }
     });
 
     setTimeout(() => {
       setScanned(false);
+      setMessage('');
+      setIcon(''); 
     }, 5000);
+  };
+
+  const handleCloseMessage = () => {
+    setScanned(false);
+    setMessage(''); 
+    setIcon(''); 
   };
 
   const renderCamera = () => {
@@ -56,22 +64,36 @@ export default function App() {
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
-        <Text style={styles.paragraph}>Camera permission not granted</Text>
+        <Text style={styles.paragraph}>Permiso de cámara no concedido</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Barcode Scanner App!</Text>
-      <Text style={styles.paragraph}>Scan a barcode to start your job.</Text>
+      <Text style={styles.title}>Escanea el Código QR</Text>
+      <Text style={styles.paragraph}>Escanea el codigo para registrar tu asistencia.</Text>
       {renderCamera()}
+      {message ? (
+        <View style={styles.messageOverlay}>
+          <View style={styles.messageContainer}>
+            <FontAwesome5 name={icon} size={50} color={icon === 'times-circle' ? 'red' : 'green'} />
+            <Text style={styles.messageText}>{message}</Text>
+            <TouchableOpacity
+              style={styles.okButton}
+              onPress={handleCloseMessage}
+            >
+              <Text style={styles.okButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : null}
       <TouchableOpacity
         style={styles.button}
         onPress={() => setScanned(false)}
         disabled={scanned}
       >
-        <Text style={styles.buttonText}>Scan QR to Start your job</Text>
+        <Text style={styles.buttonText}>Reiniciar Escaneo</Text>
       </TouchableOpacity>
     </View>
   );
@@ -87,6 +109,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#2b5983'
   },
   paragraph: {
     fontSize: 16,
@@ -103,12 +126,41 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   button: {
-    backgroundColor: 'blue',
+    backgroundColor: '#FFB820',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
   },
   buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  messageOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000, 
+  },
+  messageContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  messageText: {
+    fontSize: 16,
+    marginTop: 10,
+  },
+  okButton: {
+    marginTop: 20,
+    backgroundColor: '#2b5983',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  okButtonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
