@@ -1,5 +1,5 @@
 import { SafeAreaView } from "react-native-safe-area-context"
-import { ActivityIndicator, Text, StyleSheet } from "react-native"
+import { ActivityIndicator, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { NavigationProp } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 
@@ -10,6 +10,7 @@ import { RouteProp } from "@react-navigation/native";
 import { getEvent } from "@/services/apiService";
 import { string } from "yup";
 import { ThemedView } from "@/components/ThemedView";
+import Icon from "react-native-vector-icons/Ionicons";
 
 interface DetailEventScreenProps {
     navigation: NavigationProp<any>;
@@ -29,6 +30,10 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
   const { id } = route.params;
   const [event, setEvent] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(true);
+
+  const handleAddEvent = () => {
+    navigation.navigate('AddUserEvent'); 
+  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -58,6 +63,9 @@ const DetailEventScreen: React.FC<DetailEventScreenProps> = ({ navigation,  rout
   return (
     <SafeAreaView>
       <Text>{event?.title}</Text>
+      <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
+        <Icon name="add" size={30} color="#fff" />
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }
