@@ -21,6 +21,7 @@ export default function AppNavigator() {
         <Stack.Screen name="DetailEvent" component={DetailEventScreen} options={{ headerShown: false }} />
          <Stack.Screen name="ReadQr" component={ReadQrScreen} options={{ headerShown: false }} />
          <Stack.Screen name="AddUserEvent" component={AddUserEventScreen} options={{ headerShown: false }} />
+         <Stack.Screen name="ReadQrUser" component={ReadQrScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
   );
 }
