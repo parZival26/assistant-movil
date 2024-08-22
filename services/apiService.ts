@@ -3,13 +3,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // src/services/apiService.ts
 const BASE_URL = 'http://tuquio.com/assistant/api';
 
+enum Status {
+  starting_soon = 'starting_soon',
+  ongoing = 'ongoing',
+  finished = 'finished',
+}
+
 interface Event {
-    title: string;
-    description: string;
-    initialDate: string;
-    finalDate: string;
-    speaker: string;
-    location: string;
+  id: number
+  title: string;
+  description: string;
+  initialDate: string;
+  finalDate: string;
+  speaker: string;
+  location: string;
+  status: Status;
 }
 
 
@@ -88,7 +96,7 @@ interface UserEvents {
   speaker: string;
 }
 
-export const getUserEvents = async (): Promise<UserEvents[] | { error: string }> => {
+export const getUserEvents = async (): Promise<Event[] | { error: string }> => {
   try {
     const token = await getToken();
     if (!token) {

@@ -14,10 +14,14 @@ enum Status {
 
 
 interface Event {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  date: string;
+  initialDate: string;
+  finalDate: string;
+  speaker: string;
+  location: string;
+  status: Status;
 }
 
 interface EventCardProps {
@@ -26,15 +30,31 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event, onPress }) => {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toISOString().split('T')[0];
+  };
+
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress()}>
-      <Image source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }} style={styles.image} />
-      <View style={styles.cardContent}>
-        <ThemedText style={styles.title}>{event.title}</ThemedText>
-        <ThemedText style={styles.description}>{event.description}</ThemedText>
-        <ThemedText style={styles.date}>{event.date}</ThemedText>
-      </View>
-    </TouchableOpacity>
+    <>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText style={styles.title}>Uassistance</ThemedText>
+        <Image
+          source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
+          style={styles.reactLogo}
+        />
+      </ThemedView>
+      <TouchableOpacity style={styles.card} onPress={onPress}>
+        <Image source={{ uri: 'https://xegmenta.com/wp-content/uploads/2019/06/organizar-evento-corp-opt.jpg' }} style={styles.image} />
+        <View style={styles.cardContent}>
+          <View style={styles.titleRow}>
+            <ThemedText style={styles.cardTitle}>{event.title}</ThemedText>
+          </View>
+          <View style={styles.decorationLine} />
+          <ThemedText style={styles.cardDate}>{formatDate(event.initialDate)}</ThemedText>
+          <ThemedText style={styles.cardDescription}>{event.description}</ThemedText>
+        </View>
+      </TouchableOpacity>
+    </>
   );
 };
 
@@ -77,7 +97,7 @@ const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
     <ThemedView style={styles.container}>
       <FlatList
         data={events}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <EventCard event={item}  onPress={() => navigation.navigate("DetailEvent", { id: item.id })}/>}
       />
        <TouchableOpacity style={styles.fab} onPress={handleAddEvent}>
@@ -90,44 +110,86 @@ const DetallesScreen: React.FC<DetallesScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 0,
+    backgroundColor:'#ffffff'
+  },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: '5%',
+    paddingBottom: '7%',
+    backgroundColor: 'white',
+    position: 'relative'
+  },
+  reactLogo: {
+    width: 70,
+    height: 70,
+    marginLeft: 15,
+    marginTop: -4,
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#2b5983',
+    paddingTop: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: 'visible', 
     marginBottom: 16,
+    marginTop: '5%',
+    marginLeft: '3%',
+    marginRight: '3%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  
+  decorationLine: {
+    height: 2, 
+    backgroundColor: '#2b5983', 
+    marginVertical: 4,
+    top:2, 
+    width: '100%', 
+    marginLeft:-2,
+    borderRadius:10
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 150,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10
   },
   cardContent: {
     padding: 16,
   },
-  title: {
+  cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: '#2b5983',
   },
-  description: {
+  cardDate: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
+    color: '#989898',
+    marginBottom: 4,
+    marginTop: 4,
+    borderRadius: 10
   },
-  date: {
-    fontSize: 12,
-    color: '#999',
+  cardDescription: {
+    fontSize: 16,
+    color: '#333',
   },
   fab: {
     position: 'absolute',

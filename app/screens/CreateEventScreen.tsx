@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity, ScrollView, Image} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createEvent } from '../../services/apiService'; // Asegúrate de ajustar la ruta según tu estructura de proyecto
 import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 const schema = yup.object().shape({
   title: yup.string().required('El título es obligatorio'),
@@ -35,7 +37,15 @@ export default function CreateEventScreen() {
   };
 
   return (
+    
     <ScrollView contentContainerStyle={styles.container}>
+      <ThemedView style={styles.titleContainer}>
+      <ThemedText style={styles.title}>Uassistance</ThemedText>
+      <Image
+        source={{ uri: 'https://sion.unac.edu.co/Content/Imagenes/Logo_UNAC/Logo.png' }}
+        style={styles.reactLogo}
+      />
+    </ThemedView>
       <Text style={styles.title}>Crear Evento</Text>
       <Controller
         control={control}
@@ -157,14 +167,26 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'red',
     alignItems: 'center',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  reactLogo: {
+    width: 70,
+    height: 70,
+    marginLeft: 15,
+    marginTop: -4,
+  },
   title: {
-    fontSize: 28,
+    fontSize: 40,
     fontWeight: 'bold',
-    marginBottom: 24,
-    color: '#333',
+    color: '#2b5983',
+    paddingTop: 20,
   },
   input: {
     width: '100%',
